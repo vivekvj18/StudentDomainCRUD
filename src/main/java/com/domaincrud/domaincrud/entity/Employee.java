@@ -1,21 +1,15 @@
 package com.domaincrud.domaincrud.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "employees")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
-    private Long employeeId;   // PK -> employees.employee_id
+    private Long employeeId;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -23,14 +17,102 @@ public class Employee {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 150)
     private String email;
 
-    private String title;   // e.g. "Admin Manager"
+    @Column(name = "title", length = 100)
+    private String title;
 
-    @Column(name = "photograph_path")
+    @Column(name = "photograph_path", length = 255)
     private String photographPath;
 
-    @Column(name = "department_id")
-    private Long departmentId;   // later: 1 = admin dept
+    @Column(name = "department_id", nullable = false)
+    private Long departmentId;
+
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
+
+    // ✅ No-arg constructor (JPA ke liye)
+    public Employee() {
+    }
+
+    // (Optional) all-args constructor agar chahiye
+    public Employee(Long employeeId, String firstName, String lastName,
+                    String email, String title, String photographPath,
+                    Long departmentId, String password) {
+        this.employeeId = employeeId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.title = title;
+        this.photographPath = photographPath;
+        this.departmentId = departmentId;
+        this.password = password;
+    }
+
+    // ✅ Getters & Setters – yahi methods EmployeeUserDetailsService use kar raha hai
+
+    public Long getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPhotographPath() {
+        return photographPath;
+    }
+
+    public void setPhotographPath(String photographPath) {
+        this.photographPath = photographPath;
+    }
+
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

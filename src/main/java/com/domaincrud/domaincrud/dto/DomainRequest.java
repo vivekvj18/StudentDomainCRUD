@@ -1,33 +1,23 @@
-package com.domaincrud.domaincrud.entity;
+package com.domaincrud.domaincrud.dto;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "domains")
-public class Domain {
+public class DomainRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "domain_id")
-    private Long domainId;
-
+    @NotBlank(message = "Program is required")
     private String program;
+
+    @NotBlank(message = "Batch is required")
     private String batch;
+
+    @Min(value = 1, message = "Capacity must be at least 1")
     private int capacity;
+
+    @NotBlank(message = "Qualification is required")
     private String qualification;
 
-    public Domain() {
-    }
-
-    // ---------- getters & setters ----------
-
-    public Long getDomainId() {
-        return domainId;
-    }
-
-    public void setDomainId(Long domainId) {
-        this.domainId = domainId;
-    }
+    // ---- getters & setters ----
 
     public String getProgram() {
         return program;
@@ -61,3 +51,4 @@ public class Domain {
         this.qualification = qualification;
     }
 }
+

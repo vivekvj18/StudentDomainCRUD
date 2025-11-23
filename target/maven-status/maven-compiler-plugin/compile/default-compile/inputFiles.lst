@@ -1,0 +1,12 @@
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/config/ASecurityConfig.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/controller/DomainController.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/entity/Domain.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/entity/Employee.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/entity/Student.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/exception/ApiError.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/exception/GlobalExceptionHandler.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/exception/ResourceNotFoundException.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/repository/DomainRepository.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/repository/EmployeeRepository.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/repository/StudentRepository.java
+/home/vivekjoshi/Desktop/MTECH CSE 2025/ESD/StudentDomainCRUD/src/main/java/com/domaincrud/domaincrud/service/DomainService.java

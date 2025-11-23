@@ -6,6 +6,12 @@ import com.domaincrud.domaincrud.repository.StudentRepository;
 import com.domaincrud.domaincrud.service.DomainService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.domaincrud.domaincrud.exception.ResourceNotFoundException;
+import com.domaincrud.domaincrud.dto.DomainRequest;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+
+
 
 import java.util.List;
 import java.util.Optional;
@@ -24,10 +30,20 @@ public class DomainController {
 
     // 1. Create a new domain
     @PostMapping
-    public ResponseEntity<Domain> createDomain(@RequestBody Domain domain) {
-        Domain saved = domainService.saveDomain(domain);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<Domain> createDomain(@Valid @RequestBody DomainRequest request) {
+
+        // DTO -> Entity mapping
+        Domain domain = new Domain();
+        domain.setProgram(request.getProgram());
+        domain.setBatch(request.getBatch());
+        domain.setCapacity(request.getCapacity());
+        domain.setQualification(request.getQualification());
+
+        Domain saved = domainService.createDomain(domain);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
+
 
     // 2. Get all domains
     @GetMapping
@@ -39,30 +55,28 @@ public class DomainController {
     // 3. Get single domain by ID
     @GetMapping("/{id}")
     public ResponseEntity<Domain> getDomainById(@PathVariable Long id) {
-        Optional<Domain> domainOpt = domainService.getDomainById(id);
-        return domainOpt
-                .map(ResponseEntity::ok)          // agar mila to 200 + body
-                .orElseGet(() -> ResponseEntity.notFound().build()); // nahi mila to 404
+        Domain domain = domainService.getDomainById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Domain not found with id: " + id));
+
+        return ResponseEntity.ok(domain);
     }
+
 
     // 4. Update domain by ID
     @PutMapping("/{id}")
     public ResponseEntity<Domain> updateDomain(@PathVariable Long id,
-                                               @RequestBody Domain updatedDomain) {
-        Optional<Domain> existingOpt = domainService.getDomainById(id);
-        if (existingOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();   // 404 if not found
-        }
+                                               @Valid @RequestBody DomainRequest request) {
 
-        Domain existing = existingOpt.get();
-        existing.setProgram(updatedDomain.getProgram());
-        existing.setBatch(updatedDomain.getBatch());
-        existing.setCapacity(updatedDomain.getCapacity());
-        existing.setQualification(updatedDomain.getQualification());
+        Domain domain = new Domain();
+        domain.setProgram(request.getProgram());
+        domain.setBatch(request.getBatch());
+        domain.setCapacity(request.getCapacity());
+        domain.setQualification(request.getQualification());
 
-        Domain saved = domainService.saveDomain(existing);
-        return ResponseEntity.ok(saved);
+        Domain updated = domainService.updateDomain(id, domain);
+        return ResponseEntity.ok(updated);
     }
+
 
     // 5. Delete domain by ID
     @DeleteMapping("/{id}")

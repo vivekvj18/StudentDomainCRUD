@@ -2,11 +2,10 @@ package com.domaincrud.domaincrud.repository;
 
 import com.domaincrud.domaincrud.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    // This will be used for login purpose later
     Optional<Employee> findByEmail(String email);
 }
-
