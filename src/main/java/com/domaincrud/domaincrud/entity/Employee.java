@@ -29,17 +29,14 @@ public class Employee {
     @Column(name = "department_id", nullable = false)
     private Long departmentId;
 
-    @Column(name = "password", nullable = false, length = 255)
-    private String password;
+    // ✅ Password column removed completely
 
-    // ✅ No-arg constructor (JPA ke liye)
     public Employee() {
     }
 
-    // (Optional) all-args constructor agar chahiye
     public Employee(Long employeeId, String firstName, String lastName,
                     String email, String title, String photographPath,
-                    Long departmentId, String password) {
+                    Long departmentId) {
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -47,10 +44,9 @@ public class Employee {
         this.title = title;
         this.photographPath = photographPath;
         this.departmentId = departmentId;
-        this.password = password;
     }
 
-    // ✅ Getters & Setters – yahi methods EmployeeUserDetailsService use kar raha hai
+    // ✅ Getters & Setters (Password removed)
 
     public Long getEmployeeId() {
         return employeeId;
@@ -106,13 +102,5 @@ public class Employee {
 
     public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

@@ -15,7 +15,7 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id")
-    private Long studentId;   // PK -> students.student_id
+    private Long studentId;
 
     @Column(name = "roll_number", nullable = false, unique = true)
     private String rollNumber;
@@ -40,8 +40,17 @@ public class Student {
     @Column(name = "graduation_year")
     private Integer graduationYear;
 
-    // FK -> domains.domain_id
     @ManyToOne
     @JoinColumn(name = "domain_id")
     private Domain domain;
+
+    // ✅ MANUALLY ADD THIS SETTER (To fix the error)
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+    }
+
+    // ✅ MANUALLY ADD GETTER (Just in case)
+    public Domain getDomain() {
+        return this.domain;
+    }
 }

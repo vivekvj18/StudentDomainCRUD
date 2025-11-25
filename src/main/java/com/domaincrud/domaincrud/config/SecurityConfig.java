@@ -1,59 +1,98 @@
 package com.domaincrud.domaincrud.config;
 
-import com.domaincrud.domaincrud.service.EmployeeUserDetailsService;
+import com.domaincrud.domaincrud.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final EmployeeUserDetailsService employeeUserDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(EmployeeUserDetailsService employeeUserDetailsService) {
-        this.employeeUserDetailsService = employeeUserDetailsService;
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
+                // CORS Configuration
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // Disable CSRF (since we're using token-based auth)
                 .csrf(csrf -> csrf.disable())
+
+                // Session Management - STATELESS (relying on tokens)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
+                // Authorization Rules (matching PDF flow)
                 .authorizeHttpRequests(auth -> auth
-                        // Swagger public
+                        // Public endpoints - No authentication required
                         .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/",
+                                "/login",
+                                "/oauth2/callback",
+                                "/error"
                         ).permitAll()
 
-                        // Sirf ADMIN (department_id = 1) ko domains ke saare APIs
-                        .requestMatchers("/api/domains/**").hasRole("ADMIN")
-
-                        // Baaki sab ko auth chahiye
+                        // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults());
 
-        // 👉 Spring Security ko bolo ki ye wala UserDetailsService use kare
-        http.userDetailsService(employeeUserDetailsService);
+                // Add custom JWT filter BEFORE Spring's UsernamePasswordAuthenticationFilter
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+
+                // Disable default form login (we're using custom OAuth flow)
+                .formLogin(form -> form.disable())
+
+                // Disable default logout (we have custom /signout)
+                .logout(logout -> logout.disable());
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        // DB me "{noop}admin123" jaisa password hai to ye encoder sahi hai
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // Allow frontend origins
+        configuration.setAllowedOriginPatterns(List.of("*"));
+
+        // Allow all HTTP methods
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
+
+        // Allow all headers
+        configuration.setAllowedHeaders(List.of("*"));
+
+        // Allow credentials (cookies)
+        configuration.setAllowCredentials(true);
+
+        // Expose headers to frontend
+        configuration.setExposedHeaders(Arrays.asList(
+                "Authorization", "Set-Cookie"
+        ));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

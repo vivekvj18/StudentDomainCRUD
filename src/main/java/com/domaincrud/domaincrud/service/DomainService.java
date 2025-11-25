@@ -51,11 +51,25 @@ public class DomainService {
         return domainRepository.save(existing);
     }
 
-    // 5. Delete domain
+    // 5. Delete domain (Safe Mode: Students ko delete nahi karega, bas unlink karega)
     public void deleteDomain(Long id) {
         if (!domainRepository.existsById(id)) {
             throw new ResourceNotFoundException("Domain not found with id: " + id);
         }
+
+        // 1. Is domain ke students nikalo
+        List<Student> students = studentRepository.findByDomain_DomainId(id);
+
+        // 2. Har student ka domain NULL set karo (Unlink)
+        if (!students.isEmpty()) {
+            for (Student student : students) {
+                student.setDomain(null);
+            }
+            // 3. Updated students ko save karo
+            studentRepository.saveAll(students);
+        }
+
+        // 4. Ab Domain delete karo (Ab koi error nahi aayega)
         domainRepository.deleteById(id);
     }
 
